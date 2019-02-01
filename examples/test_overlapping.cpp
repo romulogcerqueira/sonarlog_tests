@@ -71,82 +71,124 @@ cv::Mat applyColorGradient(const cv::Mat& src, const ColorGradient& colormap) {
     return dst;
 }
 
-int main(int argc, char const *argv[]) {
+// int main(int argc, char const *argv[]) {
+
+//     const std::string logfiles[] = {
+//         // "/home/romulo/workspace/sonar_toolkit/data/logs/paper/ssiv_sim.1.log",
+//         DATA_PATH_STRING + "/logs/paper/ssiv_gemini.1.log"
+//     };
+
+//     uint num_logfiles = sizeof(logfiles) / sizeof(std::string);
+//     sonar_processing::SonarHolder sonar_holder;
+//     base::samples::Sonar sample;
+//     size_t start_index = (argc == 2) ? atoi(argv[1]) : 0;
+//     double scale_factor = 0.4;
+
+//     for (size_t i = 0; i < num_logfiles; i++) {
+//         rock_util::LogReader reader(logfiles[i]);
+//         rock_util::LogStream stream = reader.stream("gemini.sonar_samples");
+//         // rock_util::LogStream stream = reader.stream("sonar_multibeam_imager.sonar_samples");
+//         stream.set_current_sample_index(start_index);
+
+//         // while (stream.current_sample_index() < stream.total_samples()) {
+//             stream.next<base::samples::Sonar>(sample);
+//             load_sonar_holder(sample, sonar_holder);
+
+//             /* polar image */
+//             cv::Mat polar(sample.beam_count, sample.bin_count, CV_32FC1, (float*) sample.bins.data());
+
+//             /* cartesian image */
+//             cv::Mat cart = sonar_holder.cart_image();
+//             cv::resize(cart, cart, cv::Size(862, 500));
+
+//             /* file operations */
+//             // writeImageToFile(polar, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_sim_polar.yml");
+//             // writeImageToFile(cart, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_sim_cart.yml");
+//             // writeImageToFile(polar, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_real_polar.yml");
+//             // writeImageToFile(cart, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_real_cart.yml");
+//             // cv::Mat out1 = readImageFromFile("real.yml");
+//             // cv::Mat out2 = readImageFromFile("real.yml");
+
+//             /* output */
+//             cv::imshow("polar", polar);
+//             cv::imshow("cart", cart);
+//             cv::waitKey();
+
+//             // std::cout << "Overlap: " << evaluateOverlap(out1, out2) << std::endl;
+
+//             // std::cout << " === IDX === " << stream.current_sample_index() << std::endl;
+//             // std::cout << sample.bin_count << std::endl;
+//         // }
+//     }
+
+// return 0;
+// }
+
+int main(int argc, char const *argv[])
+{
 
     const std::string logfiles[] = {
         // "/home/romulo/workspace/sonar_toolkit/data/logs/paper/ssiv_sim.1.log",
-        DATA_PATH_STRING + "/logs/paper/ssiv_gemini.1.log"
-    };
+        // DATA_PATH_STRING + "/logs/paper/ssiv_gemini.1.log"};
+        // DATA_PATH_STRING + "/logs/gemini-ferry.3.log"
+        // "/home/romulo/dev/sonarsim/simulation/examples/logs/20190130-1859/sonar_multibeam.0.log"     // ferry
+        // "/home/romulo/dev/sonarsim/simulation/examples/logs/20190130-2036.1/sonar_multibeam.0.log"   // pipeline
+        "/home/romulo/dev/sonarsim/simulation/examples/logs/20190130-2351/sonar_multibeam.0.log"        // cooler
+};
 
-    uint num_logfiles = sizeof(logfiles) / sizeof(std::string);
-    sonar_processing::SonarHolder sonar_holder;
-    base::samples::Sonar sample;
-    size_t start_index = (argc == 2) ? atoi(argv[1]) : 0;
-    double scale_factor = 0.4;
+uint num_logfiles = sizeof(logfiles) / sizeof(std::string);
+sonar_processing::SonarHolder sonar_holder;
+base::samples::Sonar sample;
+size_t start_index = (argc == 2) ? atoi(argv[1]) : 0;
 
-    for (size_t i = 0; i < num_logfiles; i++) {
-        rock_util::LogReader reader(logfiles[i]);
-        rock_util::LogStream stream = reader.stream("gemini.sonar_samples");
-        // rock_util::LogStream stream = reader.stream("sonar_multibeam_imager.sonar_samples");
-        stream.set_current_sample_index(start_index);
+for (size_t i = 0; i < num_logfiles; i++)
+{
+    rock_util::LogReader reader(logfiles[i]);
+    // rock_util::LogStream stream = reader.stream("gemini.sonar_samples");
+    rock_util::LogStream stream = reader.stream("/sonar_multibeam.sonar_samples");
+    stream.set_current_sample_index(start_index);
 
-        // while (stream.current_sample_index() < stream.total_samples()) {
-            stream.next<base::samples::Sonar>(sample);
-            load_sonar_holder(sample, sonar_holder);
 
-            /* polar image */
-            cv::Mat polar(sample.beam_count, sample.bin_count, CV_32FC1, (float*) sample.bins.data());
+    // while (stream.current_sample_index() < stream.total_samples())
+    // {
+        stream.next<base::samples::Sonar>(sample);
 
-            /* cartesian image */
-            cv::Mat cart = sonar_holder.cart_image();
-            cv::resize(cart, cart, cv::Size(862, 500));
+        // sample.beam_count = 256;
+        // sample.bin_count = 904;
+        // sample.bins.assign(sample.bin_count * sample.beam_count, 1);
 
-            /* file operations */
-            // writeImageToFile(polar, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_sim_polar.yml");
-            // writeImageToFile(cart, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_sim_cart.yml");
-            // writeImageToFile(polar, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_real_polar.yml");
-            // writeImageToFile(cart, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_real_cart.yml");
-            // cv::Mat out1 = readImageFromFile("real.yml");
-            // cv::Mat out2 = readImageFromFile("real.yml");
+        load_sonar_holder(sample, sonar_holder);
 
-            /* output */
-            cv::imshow("polar", polar);
-            cv::imshow("cart", cart);
-            cv::waitKey();
+        /* polar image */
+        cv::Mat polar(sample.beam_count, sample.bin_count, CV_32FC1, (float *)sample.bins.data());
 
-            // std::cout << "Overlap: " << evaluateOverlap(out1, out2) << std::endl;
+        /* cartesian image */
+        cv::Mat cart = sonar_holder.cart_image();
+        cv::resize(cart, cart, cv::Size(862, 500));
 
-            // std::cout << " === IDX === " << stream.current_sample_index() << std::endl;
-            // std::cout << sample.bin_count << std::endl;
-        // }
-    }
+        // std::cout << "Size: " << polar.rows << "," << polar.cols << std::endl;
+        // cv::resize(cart, cart, cv::Size(862, 500));
 
-return 0;
+        /* file operations */
+        writeImageToFile(polar, "/home/romulo/Desktop/cooler_polar.yml");
+        writeImageToFile(cart, "/home/romulo/Desktop/cooler_cart.yml");
+        // writeImageToFile(polar, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_real_polar.yml");
+        // writeImageToFile(cart, "/home/romulo/workspace/sonar_toolkit/data/logs/paper/storage/ssiv_real_cart.yml");
+        // writeImageToFile(cart, "/home/romulo/Desktop/ssiv_cart_mask.yml");
+        // cv::Mat out1 = readImageFromFile("real.yml");
+        // cv::Mat out2 = readImageFromFile("real.yml");
+
+        /* output */
+        cv::imshow("polar", polar);
+        cv::imshow("cart", cart);
+        cv::waitKey();
+
+        // std::cout << "Overlap: " << evaluateOverlap(out1, out2) << std::endl;
+
+        std::cout << " === IDX === " << stream.current_sample_index() << std::endl;
+        // std::cout << sample.bin_count << std::endl;
+        }
+    // }
+
+    return 0;
 }
-
-// int main(int argc, char const *argv[]) {
-//     ColorGradient colormap;
-//     colormap.colormapSelector(COLORGRADIENT_HOT);
-//
-//     cv::Mat ssiv_real  = readImageFromFile("ssiv_real.yml");
-//     cv::Mat ssiv_sim   = readImageFromFile("ssiv_sim.yml");
-//     cv::Mat sonar_mask = readImageFromFile("sonar_mask.yml");
-//
-//     // convert to 8-bit
-//     // ssiv_real.convertTo(ssiv_real, CV_8U, 255);
-//     // ssiv_sim.convertTo(ssiv_sim, CV_8U, 255);
-//
-//     // output with colormap
-//     cv::Mat ssiv_real_color = applyColorGradient(ssiv_real, colormap);
-//     cv::Mat ssiv_sim_color  = applyColorGradient(ssiv_sim, colormap);
-//
-//     cv::imshow("ssiv_real_color", ssiv_real_color);
-//     cv::imshow("ssiv_sim_color", ssiv_sim_color);
-//
-//     // evaluation results
-//     // std::cout << "Overlap Real/Sim: " << (evaluateOverlap(ssiv_real, ssiv_sim, sonar_mask) * 100) << "% " << std::endl;
-//
-//     cv::waitKey();
-//
-//     return 0;
-// }

@@ -90,7 +90,7 @@ int main(int argc, char const *argv[]) {
 
     // simulated images
     cv::Mat ssiv_cart_sim   = readImageFromFile(DATA_PATH_STRING + "/logs/paper/ssiv/ssiv_cart_sim.yml");
-    cv::Mat ssiv_polar_sim  = readImageFromFile(DATA_PATH_STRING + "/logs/paper/ssiv/ssiv_polar_sim.yml");
+    cv::Mat ssiv_polar_sim = readImageFromFile(DATA_PATH_STRING + "/logs/paper/ssiv/ssiv_polar_sim.yml");
 
     // output with colormap
     cv::Mat ssiv_cart_real_color  = applyColorGradient(ssiv_cart_real, colormap);
@@ -99,16 +99,23 @@ int main(int argc, char const *argv[]) {
     cv::Mat ssiv_cart_sim_color  = applyColorGradient(ssiv_cart_sim, colormap);
     cv::Mat ssiv_polar_sim_color = applyColorGradient(ssiv_polar_sim, colormap);
 
+    std::cout << "Size: " << ssiv_polar_sim.rows << "," << ssiv_polar_sim.cols << std::endl;
+
     cv::imshow("ssiv_cart_real_color", ssiv_cart_real_color);
     cv::imshow("ssiv_polar_real_color", ssiv_polar_real_color);
     cv::imshow("ssiv_cart_sim_color", ssiv_cart_sim_color);
     cv::imshow("ssiv_polar_sim_color", ssiv_polar_sim_color);
 
-    // ssiv_polar_real.convertTo(ssiv_polar_real, CV_8U, 255);
-    // ssiv_polar_sim.convertTo(ssiv_polar_sim, CV_8U, 255);
+    ssiv_polar_real.convertTo(ssiv_polar_real, CV_8U, 255);
+    ssiv_polar_sim.convertTo(ssiv_polar_sim, CV_8U, 255);
+
+    // new tests
+
+    cv::imwrite("/home/romulo/Desktop/ssiv_polar_real.jpg", ssiv_polar_real_color);
+    cv::imwrite("/home/romulo/Desktop/ssiv_polar_sim.jpg", ssiv_polar_sim_color);
 
     // quality evaluation results
-    std::cout << "MSE   : " << calcMSE(ssiv_polar_real, ssiv_polar_sim) << std::endl;
+    // std::cout << "MSE   : " << calcMSE(ssiv_polar_real, ssiv_polar_sim) << std::endl;
     // std::cout << "RMSE  : " << qs::RMSE(ssiv_polar_real, ssiv_polar_sim) << std::endl;
     // std::cout << "PSNR  : " << qs::PSNR(ssiv_polar_sim, ssiv_polar_real) << std::endl;
     // std::cout << "SSIM  : " << qs::SSIM(ssiv_polar_real, ssiv_polar_sim) << std::endl;
